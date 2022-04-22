@@ -9,6 +9,7 @@ export default class RecadosController {
 
         return response.json(recados.map(recado => {
             return {
+                id: recado.id,
                 descricao: recado.descricao.toUpperCase(),
                 detalhes: recado.detalhes.toUpperCase()
             }
@@ -21,6 +22,7 @@ export default class RecadosController {
         const recados = await service.findOne(parseInt(id))
 
         return response.json({
+            id: recados?.id,
             descricao: recados?.descricao.toUpperCase(),
             detalhes: recados?.detalhes.toUpperCase()
         })
@@ -28,6 +30,7 @@ export default class RecadosController {
 
     async store(request: Request, response: Response){
         const { descricao, detalhes} = request.body
+        
         const service = new RecadosService()
         const recados = service.create({
             descricao: descricao,
