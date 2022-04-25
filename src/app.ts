@@ -3,6 +3,9 @@ import cors from 'cors'
 
 import Database from './database/connections/database';
 import RecadosRoutes from './routers/recados';
+import { logMiddleware } from './middlewares';
+import { HttpError } from './error';
+
 
 export default class Application {
     readonly #express: express.Application;
@@ -13,7 +16,7 @@ export default class Application {
 
     async init() {        
         this.config();
-        // this.middlewares();
+        this.middlewares();
         this.routers();
         await this.database();
     }
@@ -30,9 +33,9 @@ export default class Application {
         this.#express.use(cors());
     }
 
-    // private middlewares() {
-    //     // TODO
-    // }
+    private middlewares() {
+        this.#express.use(logMiddleware)
+    }
 
     private routers() {
         const recadosRoutes = new RecadosRoutes().init()
