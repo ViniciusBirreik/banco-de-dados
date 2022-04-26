@@ -1,5 +1,5 @@
-import express from 'express'
 import cors from 'cors'
+import express, { Request, Response, NextFunction, ErrorRequestHandler } from 'express'
 
 import Database from './database/connections/database';
 import RecadosRoutes from './routers/recados';
@@ -19,6 +19,7 @@ export default class Application {
         this.middlewares();
         this.routers();
         await this.database();
+        this.errors()
     }
 
     start(port: number) {
@@ -37,6 +38,13 @@ export default class Application {
         this.#express.use(logMiddleware)
     }
 
+    private errors() {
+        this.#express.use((error: HttpError, request: Request, response: Response, next: NextFunction) => {
+            return response.status(error.status).json({
+                mensagem: error.message
+            })
+        })
+    }
     private routers() {
         const recadosRoutes = new RecadosRoutes().init()
         this.#express.use(recadosRoutes)
